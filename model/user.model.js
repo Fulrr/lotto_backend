@@ -1,25 +1,23 @@
-const mongoose =require('mongoose');
-const bcrypt = require("bcrypt");
-
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 const db = require('../config/db');
 
 const { Schema } = mongoose;
 
-
 const userSchema = new Schema({
-    email:{
-        type:String,
-        lowercase:true,
-        required :true,
-        unique   :true
+    email: {
+        type: String,
+        lowercase: true,
+        required: true,
+        unique: true
     },
-    password:{
-        type:String,
-        required :true,
+    password: {
+        type: String,
+        required: true
     }
 });
 
-userSchema.pre('save',async function () {
+userSchema.pre('save', async function () {
     try {
         var user = this;
         const salt = await(bcrypt.genSalt(10));
@@ -27,11 +25,20 @@ userSchema.pre('save',async function () {
 
         user.password = hashpass;
         
-    } catch (error) {
-        throw error;
+    }  catch (error) {
+        next(error); 
     }
-})
+});
 
-const UserModel = db.model('user',userSchema);
+userSchema.methods.comparePassword = async function (userPassword) {
+    try {
+        const isMatch = await bcrypt.compare(userPassword, this.password);
+        return isMatch;
+    } catch (error) {
+        throw error; 
+    }
+};
 
-module.exports = UserModel;
+const UserModel = db.model('User', userSchema);
+
+module.exports = UserModel; 
