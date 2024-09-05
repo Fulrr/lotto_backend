@@ -5,13 +5,25 @@ const db = require('../config/db');
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+    name: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         lowercase: true,
         required: true,
         unique: true
     },
+    phone: {
+        type: String,
+        required: true
+    },
     password: {
+        type: String,
+        required: true
+    },
+    confpass: {
         type: String,
         required: true
     }
@@ -21,9 +33,12 @@ userSchema.pre('save', async function () {
     try {
         var user = this;
         const salt = await(bcrypt.genSalt(10));
-        const hashpass = await bcrypt.hash(user.password,salt);
 
+        const hashpass = await bcrypt.hash(user.password,salt);
         user.password = hashpass;
+
+        const hashconfpass = await bcrypt.hash(user.confpass, salt);
+        user.confpass = hashconfpass;
         
     }  catch (error) {
         next(error); 
