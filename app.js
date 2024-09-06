@@ -10,6 +10,6 @@ app.use(body_parser.json());
 
 app.use('/',userRouter);
 app.use('/',walletRouter);
-app.use('/', lottoRoutes);
+app.use('/',lottoRoutes);
 
 module.exports = app;
