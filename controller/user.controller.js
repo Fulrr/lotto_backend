@@ -13,29 +13,28 @@ exports.register = async(req,res,next)=>{
     }
 }
 
-exports.login = async(req,res,next)=>{
+exports.login = async (req, res, next) => {
     try {
-        const {email,password} = req.body;
-
+        const { email, password } = req.body;
+        
         const user = await UserService.checkuser(email);
-
-        if(!user) {
-            throw new Error('User dont exit');
+        if (!user) {
+            console.log("User does not exist");
+            return res.status(404).json({ status: false, message: 'User does not exist' });
         }
-
+        
         const isMatch = await user.comparePassword(password);
-
-        if(isMatch === false) {
-            throw new Error('Password InValid');
+        if (isMatch === false) {
+            console.log("Invalid password");
+            return res.status(401).json({ status: false, message: 'Invalid password' });
         }
-
-        let tokenData = {_id:user._id, email:user.email};
-
+        
+        let tokenData = { _id: user._id, email: user.email };
         const token = await UserService.generateToken(tokenData, "secretKey", '1h');
-
-        res.status(200).json({status:true, token:token})
-
+        
+        res.status(200).json({ status: true, token: token });
     } catch (error) {
-        throw error;
+        console.error('Login error:', error);
+        res.status(500).json({ status: false, message: 'An error occurred during login' });
     }
-}
+};
