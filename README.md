@@ -3,18 +3,18 @@
   > node index dev
 
 
--- ผู้ใช้ #เสร็จ
-> CREATE TABLE Users ( 
+> -- ผู้ใช้ #เสร็จ
 > 
+    CREATE TABLE Users (
     UserID     INT AUTO_INCREMENT PRIMARY KEY,
     Username   VARCHAR(50) UNIQUE NOT NULL,
     Password   VARCHAR(255) NOT NULL,
     Email      VARCHAR(100) UNIQUE NOT NULL,
     );
 
--- เป๋าตังส์ #เสร็จ
-> CREATE TABLE Wallets (
+> -- เป๋าตังส์ #เสร็จ
 > 
+    CREATE TABLE Wallets (
     WalletID   INT AUTO_INCREMENT PRIMARY KEY,
     UserID     INT NOT NULL,
     Balance    DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
@@ -22,9 +22,9 @@
     FOREIGN KEY (UserID) REFERENCES Users(UserID)
     );
 
--- ลอตโต้ #เสร็จ
-> CREATE TABLE Lotto (
+> -- ลอตโต้ #เสร็จ
 > 
+    CREATE TABLE Lotto (
     LottoID       INT AUTO_INCREMENT PRIMARY KEY,
     LottoNumber   VARCHAR(6) NOT NULL,
     DrawDate      DATE NOT NULL,
@@ -32,9 +32,9 @@
     Amount        DECIMAL(10, 2) NOT NULL
     );
 
--- ลอตโต้ของผู้ใช้ #เสร็จ
-> CREATE TABLE Tickets (
+> -- ลอตโต้ของผู้ใช้ #เสร็จ
 > 
+    CREATE TABLE Tickets (
     TicketID       INT AUTO_INCREMENT PRIMARY KEY,
     UserID         INT,
     LottoID        INT,
@@ -44,25 +44,25 @@
     FOREIGN KEY (LottoID) REFERENCES Lotto(LottoID)
     );
 
--- ผลรางวัลประจำงวด #เสร็จ
-> CREATE TABLE WinningNumbers (
+> -- ผลรางวัลประจำงวด #เสร็จ
 > 
+    CREATE TABLE WinningNumbers (
     DrawID       INT AUTO_INCREMENT PRIMARY KEY,
     DrawDate     DATE NOT NULL,
     LottoNumber  INT
     );
 
--- งวดที่
-> CREATE TABLE Lessons (
+> -- งวดที่
 > 
+    CREATE TABLE Lessons (
     LessonID     INT AUTO_INCREMENT PRIMARY KEY,
     DrawID       INT
     Lessonsdes   VARCHAR(6) NOT NULL
 );
 
--- สุ่มเลข&ผู้ใช้ที่ถูกรางวัล
-> CREATE TABLE Prizes (
+> -- สุ่มเลข&ผู้ใช้ที่ถูกรางวัล
 > 
+    CREATE TABLE Prizes (
     PrizeID         INT AUTO_INCREMENT PRIMARY KEY, 
     DrawID          INT,
     UserID          INT,
