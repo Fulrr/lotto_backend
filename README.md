@@ -1,7 +1,10 @@
-คำสั่ง Run DB
-  > npm start ,
-  > node index dev
-
+> Run DB
+> 
+    npm start
+>
+> AND
+> 
+    node index dev
 
 > -- ผู้ใช้ #เสร็จ
 > 
