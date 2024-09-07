@@ -21,7 +21,11 @@ const lottoSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
-    }
+    },
+    lotto: {
+        type: Number,
+        required: true
+    },
 }, {
     timestamps: true
 });

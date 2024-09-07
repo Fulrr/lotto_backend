@@ -2,6 +2,7 @@ const app = require('./app');
 const db = require('./config/db');
 const UserModel = require('./model/user.model');
 const WalletModel = require('./model/wallet.model');
+const winningNumbers = require('./model/winningNumbers.model');
 
 const port = 8081;
 
