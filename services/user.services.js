@@ -4,12 +4,20 @@ const jwt = require('jsonwebtoken');
 class UserService {
     static async registerUser(name, email, phone, password, confpass) {
         try {
-            // Check if password and confpass match
+            // ตรวจสอบว่ารหัสผ่านและรหัสผ่านยืนยันตรงกัน
             if (password !== confpass) {
+                console.error("Password and confirmation password do not match");
                 throw new Error("Password and confirmation password do not match");
             }
 
-            const createUser = new UserModel({name, email, phone, password, confpass});
+            // ตรวจสอบว่าอีเมลมีอยู่แล้วหรือไม่
+            const existingUser = await UserModel.findOne({ email });
+            if (existingUser) {
+                console.error("Email already in use");
+                throw new Error("Email already in use");
+            }
+
+            const createUser = new UserModel({name, email, phone, password});
             return await createUser.save();
         } catch (error) {
             throw error;

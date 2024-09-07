@@ -39,4 +39,3 @@ exports.login = async(req,res,next)=>{
         throw error;
     }
 }
-

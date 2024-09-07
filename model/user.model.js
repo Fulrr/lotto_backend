@@ -23,37 +23,29 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    confpass: {
-        type: String,
-        required: true
-    }
 });
 
-userSchema.pre('save', async function () {
+userSchema.pre('save', async function (next) {
     try {
-        var user = this;
-        const salt = await(bcrypt.genSalt(10));
-
-        const hashpass = await bcrypt.hash(user.password,salt);
-        user.password = hashpass;
-
-        const hashconfpass = await bcrypt.hash(user.confpass, salt);
-        user.confpass = hashconfpass;
+        if (!this.isModified('password')) return next(); // Only hash the password if it's been modified
         
-    }  catch (error) {
-        next(error); 
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        
+        next();
+    } catch (error) {
+        next(error);
     }
 });
 
 userSchema.methods.comparePassword = async function (userPassword) {
     try {
-        const isMatch = await bcrypt.compare(userPassword, this.password);
-        return isMatch;
+        return await bcrypt.compare(userPassword, this.password);
     } catch (error) {
-        throw error; 
+        throw error;
     }
 };
 
 const UserModel = db.model('User', userSchema);
 
-module.exports = UserModel; 
+module.exports = UserModel;

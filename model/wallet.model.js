@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const db = require('../config/db');
-const UserModel = require("./user.model");
+const db = require('../config/db'); 
+const UserModel = require('./user.model');
 
 const { Schema } = mongoose;
 
@@ -13,7 +13,10 @@ const walletSchema = new Schema({
     Balance: {
         type: Number,
         required: true,
+        default: 0 // ตั้งค่าเริ่มต้นเป็น 0
     }
+}, {
+    timestamps: true // เพื่อให้ได้ข้อมูลเวลาในการสร้างและอัปเดต
 });
 
 const WalletModel = db.model('Wallet', walletSchema);
