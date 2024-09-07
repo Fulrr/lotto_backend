@@ -47,7 +47,7 @@
     FOREIGN KEY (LottoID) REFERENCES Lotto(LottoID)
     );
 
-> -- ผลรางวัลประจำงวด #เสร็จ
+> -- สุ่มเลข&ผลรางวัลประจำงวด #เสร็จ
 > 
     CREATE TABLE WinningNumbers (
     DrawID       INT AUTO_INCREMENT PRIMARY KEY,
@@ -63,7 +63,7 @@
     Lessonsdes   VARCHAR(6) NOT NULL
 );
 
-> -- สุ่มเลข&ผู้ใช้ที่ถูกรางวัล
+> -- ผู้ใช้ที่ถูกรางวัล
 > 
     CREATE TABLE Prizes (
     PrizeID         INT AUTO_INCREMENT PRIMARY KEY, 
