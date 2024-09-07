@@ -61,7 +61,7 @@
     LessonID     INT AUTO_INCREMENT PRIMARY KEY,
     DrawID       INT
     Lessonsdes   VARCHAR(6) NOT NULL
-);
+    );
 
 > -- ผู้ใช้ที่ถูกรางวัล
 > 
