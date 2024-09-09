@@ -1,6 +1,10 @@
 const winningNumbers = require('../model/winningNumbers.model');
 const Lotto = require('../model/lotto.model');
 
+exports.getAllWinning = async () => {
+    return await winningNumbers.find();
+};
+
 exports.randomWinning = async () => {
     try {
         // สุ่มหมายเลข 1-100

@@ -1,8 +1,8 @@
 const WalletModel = require("../model/wallet.model");
 
 class WalletService{
-    static async createWallet (userId, Balance){
-        const createWallet = new WalletModel({userId, Balance});
+    static async createWallet (userId, balance = 1000){
+        const createWallet = new WalletModel({ userId, Balance: balance });
         return await createWallet.save();
        
     }
