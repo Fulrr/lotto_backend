@@ -1,5 +1,14 @@
 const lottoService = require('../services/winningNumbers.services');
 
+exports.getAllWinning = async (req, res, next) => {
+    try {
+        const winningNumbers = await lottoService.getAllWinning();
+        res.json({ status: true, data: winningNumbers });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.randomWinning = async (req, res, next) => {
     try {
         const result = await lottoService.randomWinning();
