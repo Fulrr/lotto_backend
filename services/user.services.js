@@ -1,15 +1,10 @@
 const UserModel = require('../model/user.model');
+const WalletService = require('../services/wallet.services'); // เรียกใช้ WalletService
 const jwt = require('jsonwebtoken');
 
 class UserService {
     static async registerUser(name, email, phone, password, confpass) {
         try {
-            // ตรวจสอบว่ารหัสผ่านและรหัสผ่านยืนยันตรงกัน
-            if (password !== confpass) {
-                console.error("Password and confirmation password do not match");
-                throw new Error("Password and confirmation password do not match");
-            }
-
             // ตรวจสอบว่าอีเมลมีอยู่แล้วหรือไม่
             const existingUser = await UserModel.findOne({ email });
             if (existingUser) {
@@ -17,8 +12,14 @@ class UserService {
                 throw new Error("Email already in use");
             }
 
-            const createUser = new UserModel({name, email, phone, password});
-            return await createUser.save();
+            // สร้างผู้ใช้ใหม่
+            const createUser = new UserModel({ name, email, phone, password });
+            const savedUser = await createUser.save();
+
+            // สร้างกระเป๋าเงินให้กับผู้ใช้ใหม่
+            await WalletService.createWallet(savedUser._id, 1000); // กำหนดยอดเงินเริ่มต้นเป็น 0.00
+
+            return savedUser;
         } catch (error) {
             throw error;
         }
@@ -26,14 +27,30 @@ class UserService {
 
     static async checkuser(email) {
         try {
-            return await UserModel.findOne({email});
+            return await UserModel.findOne({ email });
         } catch (error) {
             throw error;
         }
     }
 
     static async generateToken(tokenData, secretKey, jwt_expire) {
-        return jwt.sign(tokenData, secretKey, {expiresIn: jwt_expire});
+        return jwt.sign(tokenData, secretKey, { expiresIn: jwt_expire });
+    }
+
+
+    static async getUserWithWallet(userId) {
+        try {
+            const user = await UserModel.findById(userId);
+            if (!user) {
+                throw new Error('User not found');
+            }
+
+            const wallet = await WalletService.getWalletByUserId(userId);
+            return { user, wallet };
+        } catch (error) {
+            throw error;
+        }
     }
 }
+
 module.exports = UserService;

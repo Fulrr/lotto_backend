@@ -23,6 +23,10 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
+    type: {
+        type: String,
+        default: 'user',  
+    }
 });
 
 userSchema.pre('save', async function (next) {

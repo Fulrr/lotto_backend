@@ -4,5 +4,6 @@ const LottoController = require('../controller/lotto.controller');
 router.get('/lottos', LottoController.getAllLottos);
 router.get('/lotto/:lottoNumber', LottoController.getLottoByNumber);
 router.post('/buylotto', LottoController.buyLotto); 
+router.post('/randombuy', LottoController.randomBuyLotto);
 
 module.exports = router;

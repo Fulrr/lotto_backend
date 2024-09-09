@@ -56,3 +56,40 @@ exports.buyLotto = async (req, res, next) => {
         next(error);
     }
 };
+
+exports.randomBuyLotto = async (req, res, next) => {
+    try {
+        const { userId } = req.body;
+
+        // ดึงลอตเตอรีทั้งหมด
+        const lottos = await LottoService.getAllLottos();
+        if (lottos.length === 0) {
+            return res.status(404).json({ status: false, message: 'No lottos available' });
+        }
+
+        // เลือกลอตเตอรีแบบสุ่ม
+        const randomIndex = Math.floor(Math.random() * lottos.length);
+        const randomLotto = lottos[randomIndex];
+
+        // ตรวจสอบกระเป๋าเงินของผู้ใช้
+        const wallet = await WalletService.getWalletByUserId(userId);
+        if (!wallet) {
+            return res.status(404).json({ status: false, message: 'Wallet not found' });
+        }
+
+        // ตรวจสอบยอดเงินในกระเป๋า
+        if (wallet.Balance < randomLotto.Price) {
+            return res.status(400).json({ status: false, message: 'Insufficient funds' });
+        }
+
+        // ลดยอดเงินในกระเป๋า
+        await WalletService.updateWalletBalance(userId, -randomLotto.Price);
+
+        // สร้างตั๋ว (ticket)
+        const ticket = await TicketService.createTicket(userId, randomLotto._id);
+
+        res.json({ status: true, message: 'Lotto purchased successfully', data: ticket });
+    } catch (error) {
+        next(error);
+    }
+};

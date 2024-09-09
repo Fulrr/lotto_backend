@@ -4,6 +4,8 @@ const connection = mongoose.createConnection('mongodb+srv://yossy:UCm53aKnr9kzdt
     // ตัวเลือกที่ถูกเลิกใช้จะต้องลบออก
 });
 
+
+
 connection
   .on('open', () => {
     console.log("MongoDB Connected");
