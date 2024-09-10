@@ -2,6 +2,30 @@ const UserService = require("../services/user.services");
 const WalletService = require('../services/wallet.services');
 
 
+exports.reset = async (req, res, next) => {
+    try {
+        await UserService.reset();
+        res.status(200).json({
+            message: 'reset successfully.'
+        });
+    } catch (error) {
+        console.error('Error in controller:', error);
+        res.status(500).json({
+            message: 'Error resetting.',
+            error: error.message
+        });
+    }
+};
+
+exports.getAll = async (req, res, next) => {
+    try {
+        const users = await UserService.getAll();
+        res.json({ status: true, data: users });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.register = async(req,res,next)=>{
     try {
         const {name, email, phone, password, confpass} = req.body;

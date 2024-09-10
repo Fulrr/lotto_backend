@@ -1,9 +1,0 @@
->> Register Phase <<
-สมัครสมาชิก พร้อมสร้าง wallet พร้อมกัน
-
->> เลือกซื้อ Lotto <<
-สุ่มซื้อ lotto
-
->> Admin การ Reset <<
-reset user
-reset lottouser

@@ -5,5 +5,13 @@ exports.getAllLottos = async () => {
 };
 
 exports.getLottoByNumber = async (lottoNumber) => {
-    return await Lotto.findOne({ LottoNumber: lottoNumber });
+    try {
+        const result = await Lotto.find({
+            LottoNumber: { $regex: lottoNumber, $options: 'i' }
+        });
+        return result;
+    } catch (error) {
+        console.error('Error fetching lotto number:', error);
+        throw error; 
+    }
 };
