@@ -7,8 +7,11 @@ exports.getAllLottos = async () => {
 };
 
 exports.getLottoByNumber = async (lottoNumber) => {
-    return await Lotto.findOne({ LottoNumber: lottoNumber });
-};
+    const regex = new RegExp(lottoNumber);
+  
+    // ใช้ $regex operator ใน MongoDB เพื่อค้นหาเลขที่ตรงกันบางส่วน
+    return await Lotto.find({ LottoNumber: { $regex: regex } });
+}; 
 
 exports.updateLottoAmount = async (lottoId, amount) => {
     return await Lotto.findByIdAndUpdate(lottoId, { Amount: amount }, { new: true });
