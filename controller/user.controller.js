@@ -26,6 +26,25 @@ exports.getAll = async (req, res, next) => {
     }
 };
 
+exports.getOne = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        // console.log('In controller, userId:', userId);
+        // console.log('req.params:', req.params);
+
+        const user = await UserService.getOne(userId);
+
+        if (!user) {
+            return res.status(404).json({ status: false, message: 'not found' });
+        }
+
+        res.json({ status: true, data: user });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 exports.register = async(req,res,next)=>{
     try {
         const {name, email, phone, password, confpass} = req.body;

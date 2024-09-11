@@ -40,7 +40,7 @@ class UserService {
 
     static async getUserWithWallet(userId) {
         try {
-            const user = await UserModel.findById(userId);
+            const user = await UserModel.findOne(userId);
             if (!user) {
                 throw new Error('User not found');
             }
@@ -79,6 +79,45 @@ class UserService {
             throw new Error('Failed to fetch users and wallets');
         }
     }
+
+    static async getOne(userId) {
+        try {
+            // console.log('In service, received userId:', userId);
+            // console.log('Type of userId:', typeof userId);
+    
+            const user = await UserModel.findOne({_id:userId});
+            
+            if (!user) {
+                console.log('User not found for userId:', userId);
+                return {
+                    email: null,
+                    wallet: {}
+                };
+            }
+    
+            console.log('User found:', user);
+    
+            try {
+                const wallet = await WalletService.getWalletByUserId(user._id);
+                console.log('Wallet fetched:', wallet);
+                return {
+                    email: user.email,
+                    wallet: wallet || {}
+                };
+            } catch (err) {
+                console.error(`Failed to fetch wallet for user ${user.email}:`, err);
+                return {
+                    email: user.email,
+                    wallet: {}
+                };
+            }
+    
+        } catch (error) {
+            console.error('Error fetching user and wallet:', error);
+            throw error; 
+        }
+    }
+    
 
     static async reset() {
         try {
