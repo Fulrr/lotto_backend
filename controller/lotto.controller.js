@@ -51,6 +51,9 @@ exports.buyLotto = async (req, res, next) => {
         // สร้าง ticket
         const ticket = await TicketService.createTicket(userId, lotto._id);
 
+        // อัปเดต Amount ใน table Lotto เป็น 0
+        await LottoService.updateLottoAmount(lotto._id, 0);
+
         res.json({ status: true, message: 'Lotto purchased successfully', data: ticket });
     } catch (error) {
         next(error);
@@ -88,8 +91,55 @@ exports.randomBuyLotto = async (req, res, next) => {
         // สร้างตั๋ว (ticket)
         const ticket = await TicketService.createTicket(userId, randomLotto._id);
 
+        // อัปเดต Amount ใน table Lotto เป็น 0
+        await LottoService.updateLottoAmount(randomLotto._id, 0);
+
         res.json({ status: true, message: 'Lotto purchased successfully', data: ticket });
     } catch (error) {
         next(error);
+    }
+};
+
+exports.getAvailableLottos = async (req, res, next) => {
+    try {
+        const availableLottos = await LottoService.getAvailableLottos();
+        res.json({ status: true, data: availableLottos });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// สำหรับการแสดงลอตโต้ของผู้ใช้
+exports.getUserLottos = async (req, res, next) => {
+    try {
+        const userId = req.params.userId || req.query.userId;
+
+        if (!userId) {
+            return res.status(400).json({ status: false, message: 'User ID is required' });
+        }
+
+        // ลบเครื่องหมาย ":" ถ้ามี
+        const cleanUserId = userId.replace(':', '');
+
+        const userLottos = await LottoService.getUserLottos(cleanUserId);
+
+        res.status(200).json({
+            status: true,
+            message: "User's lottos retrieved successfully",
+            data: userLottos
+        });
+    } catch (error) {
+        console.error("Error in getUserLottos: ", error);
+        if (error.message === 'Invalid user ID format') {
+            return res.status(400).json({
+                status: false,
+                message: "Invalid user ID format",
+            });
+        }
+        res.status(500).json({
+            status: false,
+            message: "An error occurred while retrieving user's lottos",
+            error: error.message
+        });
     }
 };

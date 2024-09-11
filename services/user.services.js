@@ -2,6 +2,7 @@ const UserModel = require('../model/user.model');
 const WalletService = require('../services/wallet.services'); // เรียกใช้ WalletService
 const jwt = require('jsonwebtoken');
 
+
 class UserService {
     static async registerUser(name, email, phone, password, confpass) {
         try {
