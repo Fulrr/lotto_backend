@@ -55,18 +55,22 @@ class UserService {
 
     static async getAll() {
         try {
-            const users = await UserModel.find({}, 'email');
+            const user = await UserModel.find();
+   
+            console.log('User found:', user.name);
     
-            const walletPromises = users.map(async (user) => {
+            const walletPromises = user.map(async (user) => {
                 try {
                     const wallet = await WalletService.getWalletByUserId(user._id);
                     return {
+                        name : user.name,
                         email: user.email,
                         wallet: wallet || {}
                     };
                 } catch (err) {
                     console.error(`Failed to fetch wallet for user ${user.email}:`, err);
                     return {
+                        name : user.name,
                         email: user.email,
                         wallet: wallet || {} 
                     };
@@ -87,10 +91,12 @@ class UserService {
             // console.log('Type of userId:', typeof userId);
     
             const user = await UserModel.findOne({_id:userId});
+            console.log('User found:', user);
             
             if (!user) {
                 console.log('User not found for userId:', userId);
                 return {
+                    name: null,
                     email: null,
                     wallet: {}
                 };
@@ -102,12 +108,14 @@ class UserService {
                 const wallet = await WalletService.getWalletByUserId(user._id);
                 console.log('Wallet fetched:', wallet);
                 return {
+                    name : user.name,
                     email: user.email,
                     wallet: wallet || {}
                 };
             } catch (err) {
                 console.error(`Failed to fetch wallet for user ${user.email}:`, err);
                 return {
+                    name : user.name,
                     email: user.email,
                     wallet: {}
                 };
