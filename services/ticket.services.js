@@ -21,3 +21,7 @@ exports.delT = async (userId) => {
         return result;
     }
 };
+
+exports.TgetOne = async (userId) => {
+    return await Ticket.find({ UserID : userId});
+}
