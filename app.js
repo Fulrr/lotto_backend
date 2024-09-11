@@ -6,6 +6,7 @@ const lottoRoutes = require('./routers/lotto.route');
 const winningNumbers = require('./routers/winningNumbers.route');
 const insert = require('./routers/insert.route');
 const ticket = require('./routers/ticket.route');
+const prizeCheckRouter = require('./routers/PrizeCheck.router');
 
 const app = express();
 
@@ -17,5 +18,6 @@ app.use('/',lottoRoutes);
 app.use('/',winningNumbers);
 app.use('/',insert);
 app.use('/',ticket);
+app.use('/', prizeCheckRouter); 
 
 module.exports = app;

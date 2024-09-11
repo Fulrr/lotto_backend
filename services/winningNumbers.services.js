@@ -1,43 +1,65 @@
-const winningNumbers = require('../model/winningNumbers.model');
+const moment = require('moment-timezone');
+const WinningNumbers = require('../model/winningNumbers.model');
 const Lotto = require('../model/lotto.model');
 
 exports.getAllWinning = async () => {
-    return await winningNumbers.find();
+    return await WinningNumbers.find();
 };
 
 exports.randomWinning = async () => {
     try {
-        // สุ่มหมายเลข 1-100
-        const number = Math.floor(Math.random() * 100) + 1;
+        // Helper function to get a random Lotto number
+        const getRandomLotto = async () => {
+            const number = Math.floor(Math.random() * 100) + 1;
+            const winning = await Lotto.findOne({ lotto: number });
+            return winning ? winning.LottoNumber : null;
+        };
 
-        // ค้นหาหมายเลขล็อตโต้ที่ตรงกับหมายเลขสุ่ม
-        const winning = await Lotto.findOne({ lotto: number });
+        // Generate random numbers for each prize
+        const prizes = {
+            first: await getRandomLotto(),
+            second: await getRandomLotto(),
+            third: await getRandomLotto(),
+            fourth: await getRandomLotto(),
+            fifth: await getRandomLotto()
+        };
 
-        if (!winning) {
-            return null; // ไม่พบหมายเลขล็อตโต้
+        // Check if any prize is missing
+        if (Object.values(prizes).some(prize => prize === null)) {
+            throw new Error('ไม่สามารถสุ่มหมายเลขล็อตโต้ครบทุกรางวัลได้');
         }
 
-        const numberwin = winning.LottoNumber;
+        // Set the draw date
+        const drawDate = moment().tz('Asia/Bangkok').startOf('day').toDate();
 
-        // สร้างเอกสารใหม่ใน winningNumbers
-        const winningRecord = new winningNumbers({
-            DrawDate: new Date(),
-            LottoWin: numberwin
+        // Create and save the winning numbers record
+        const winningRecord = new WinningNumbers({
+            DrawDate: drawDate,
+            LottoWin: prizes.first,
+            FirstPrize: prizes.first,
+            SecondPrize: prizes.second,
+            ThirdPrize: prizes.third,
+            FourthPrize: prizes.fourth,
+            FifthPrize: prizes.fifth
         });
 
-        // บันทึกเอกสารใหม่ใน MongoDB
         await winningRecord.save();
 
         return {
-            DrawDate: winningRecord.DrawDate,
-            LottoWin: winningRecord.LottoWin
+            DrawDate: moment(winningRecord.DrawDate).format('YYYY-MM-DD'),
+            LottoWin: winningRecord.LottoWin,
+            FirstPrize: winningRecord.FirstPrize,
+            SecondPrize: winningRecord.SecondPrize,
+            ThirdPrize: winningRecord.ThirdPrize,
+            FourthPrize: winningRecord.FourthPrize,
+            FifthPrize: winningRecord.FifthPrize
         };
     } catch (error) {
-        console.error('Error in service:', error);
-        throw error; // ขึ้นอยู่กับการจัดการข้อผิดพลาดใน controller
+        console.error('Error in randomWinning service:', error);
+        throw new Error(`เกิดข้อผิดพลาด: ${error.message}`);
     }
 };
 
 exports.resetWin = async () => {
-    await winningNumbers.deleteMany({});
+    await WinningNumbers.deleteMany({});
 };

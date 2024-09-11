@@ -11,11 +11,15 @@ const winningNumberSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    FirstPrize: Number,
+    SecondPrize: Number,
+    ThirdPrize: Number,
+    FourthPrize: Number,
+    FifthPrize: Number
 }, {
-    timestamps: true,
-    required: true
+    timestamps: true
 });
 
-const winningNumbers = db.model('winningNumber', winningNumberSchema);
+const WinningNumbers = db.model('WinningNumbers', winningNumberSchema);
 
-module.exports = winningNumbers;
+module.exports = WinningNumbers;
