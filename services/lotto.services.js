@@ -7,6 +7,7 @@ exports.getAllLottos = async () => {
 };
 
 exports.getLottoByNumber = async (lottoNumber) => {
+<<<<<<< HEAD
     return await Lotto.findOne({ LottoNumber: lottoNumber });
 };
 
@@ -51,5 +52,15 @@ exports.getUserLottos = async (userId) => {
         return userLottos;
     } catch (error) {
         throw error;
+=======
+    try {
+        const result = await Lotto.find({
+            LottoNumber: { $regex: lottoNumber, $options: 'i' }
+        });
+        return result;
+    } catch (error) {
+        console.error('Error fetching lotto number:', error);
+        throw error; 
+>>>>>>> 008cc8902e5b6f5c1dbe303b1c9a563a9dfbc8a6
     }
 };
