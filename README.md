@@ -71,7 +71,7 @@
     Lessonsdes   VARCHAR(6) NOT NULL
     );
 
-> -- ผู้ใช้ที่ถูกรางวัล
+> -- ผู้ใช้ที่ถูกรางวัล #เสร็จ
 > 
     CREATE TABLE Prizes (
     PrizeID         INT AUTO_INCREMENT PRIMARY KEY, 
