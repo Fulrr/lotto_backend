@@ -31,7 +31,7 @@ exports.checkUserPrizes = async (userId, drawDate) => {
         console.log('Winning Numbers:', winningNumbers);
 
         if (!winningNumbers) {
-            return { message: 'ไม่พบ Winning numbers สำหรับ DrawDate นี้' };
+            return { message: 'ไม่พบ Winning numbers สำหรับ DrawDate นี้.' };
         }
 
         // เตรียมเก็บผลลัพธ์
@@ -58,7 +58,8 @@ exports.checkUserPrizes = async (userId, drawDate) => {
                     lottoNumber: lottoNumber,
                     drawDate: drawDate,
                     prize: existingPrize.PrizeAmount,
-                    message: 'คุณได้รับรางวัลแล้วใน DrawDate นี้'
+                    claimed: existingPrize.Claimed,  // เพิ่มสถานะการเรียกร้องรางวัล
+                    message: existingPrize.Claimed ? 'คุณได้รับรางวัลแล้วใน DrawDate นี้' : 'คุณมีรางวัลที่ยังไม่ได้เรียกร้อง'
                 });
                 continue;
             }
@@ -90,7 +91,8 @@ exports.checkUserPrizes = async (userId, drawDate) => {
                     DrawID: winningNumbers._id,
                     UserID: ticket.UserID,
                     TicketID: ticket._id,
-                    PrizeAmount: prizeAmount
+                    PrizeAmount: prizeAmount,
+                    Claimed: false
                 });
 
                 await prize.save();
@@ -101,7 +103,8 @@ exports.checkUserPrizes = async (userId, drawDate) => {
                     lottoNumber: lottoNumber,
                     drawDate: drawDate,
                     prize: prizeAmount,
-                    message: `${prizeMessage} จำนวน ${prizeAmount} บาท!`
+                    claimed: false,  // เพิ่มสถานะการเรียกร้องรางวัล
+                    message: `${prizeMessage} จำนวน ${prizeAmount} บาท! (ยังไม่ได้เรียกร้อง)`
                 });
             } else {
                 results.push({
@@ -109,6 +112,7 @@ exports.checkUserPrizes = async (userId, drawDate) => {
                     lottoNumber: lottoNumber,
                     drawDate: drawDate,
                     prize: 0,
+                    claimed: false,
                     message: 'ขออภัย คุณไม่ได้รับรางวัล'
                 });
             }
