@@ -11,6 +11,19 @@ exports.getAllLottos = async (req, res, next) => {
     }
 };
 
+exports.getAllNum = async (req, res, next) => {
+    try {
+        const { lottoNumber } = req.params;
+        const lotto = await LottoService.getByNumber(lottoNumber);
+        if (!lotto) {
+            return res.status(404).json({ status: false, message: 'Lotto not found' });
+        }
+        res.json({ status: true, data: lotto });
+    } catch (error) {
+        next(error);
+    }
+};
+
 exports.getLottoByNumber = async (req, res, next) => {
     try {
         const { lottoNumber } = req.params;

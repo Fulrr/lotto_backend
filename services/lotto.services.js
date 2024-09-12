@@ -7,12 +7,12 @@ exports.getAllLottos = async () => {
 };
 
 exports.getLottoByNumber = async (lottoNumber) => {
+    return Lotto.findOne({ LottoNumber: lottoNumber });
+}; 
+
+exports.getByNumber = async (lottoNumber) => {
     const regex = new RegExp(lottoNumber);
-    if (lottoNumber) {
         return await Lotto.find({ LottoNumber: { $regex: regex } });
-    } else {
-        return await Lotto.findOne({ LottoNumber: lottoNumber });
-    }
 }; 
 
 exports.updateLottoAmount = async (lottoId, amount) => {
