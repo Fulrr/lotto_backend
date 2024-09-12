@@ -10,11 +10,7 @@ const walletSchema = new Schema({
         ref: UserModel.modelName,
         required: true
     },
-    Balance: {
-        type: Number,
-        required: true,
-        default: 0 // ตั้งค่าเริ่มต้นเป็น 0
-    }
+    Balance: { type: Number, required: true, min: 0 }
 }, {
     timestamps: true // เพื่อให้ได้ข้อมูลเวลาในการสร้างและอัปเดต
 });
