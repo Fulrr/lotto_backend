@@ -63,16 +63,20 @@ class UserService {
                 try {
                     const wallet = await WalletService.getWalletByUserId(user._id);
                     return {
+                        _id : user._id,
                         name : user.name,
-                        email: user.email,
-                        wallet: wallet || {}
+                    email: user.email,
+                    type : user.type ,
+                    wallet: wallet || {}
                     };
                 } catch (err) {
                     console.error(`Failed to fetch wallet for user ${user.email}:`, err);
                     return {
+                        _id : user._id,
                         name : user.name,
-                        email: user.email,
-                        wallet: wallet || {} 
+                    email: user.email,
+                    type : user.type ,
+                    wallet: wallet || {} 
                     };
                 }
             });
@@ -96,8 +100,10 @@ class UserService {
             if (!user) {
                 console.log('User not found for userId:', userId);
                 return {
+                    _id : null,
                     name: null,
                     email: null,
+                    type : null,
                     wallet: {}
                 };
             }
@@ -108,15 +114,19 @@ class UserService {
                 const wallet = await WalletService.getWalletByUserId(user._id);
                 console.log('Wallet fetched:', wallet);
                 return {
+                    _id : user._id,
                     name : user.name,
                     email: user.email,
+                    type : user.type ,
                     wallet: wallet || {}
                 };
             } catch (err) {
                 console.error(`Failed to fetch wallet for user ${user.email}:`, err);
                 return {
+                    _id : user._id,
                     name : user.name,
                     email: user.email,
+                    type : user.type ,
                     wallet: {}
                 };
             }
@@ -134,6 +144,22 @@ class UserService {
         } catch (error) {
             console.error('Error resetting users data:', error);
             throw error;
+        }
+    }
+
+    static async getAllUsers() {
+        try {
+            return await UserModel.find({});
+        } catch (error) {
+            throw new Error(`Error fetching users: ${error.message}`);
+        }
+    };
+
+    static async deleteUser(userId) {
+        try {
+            await UserModel.findByIdAndDelete(userId);
+        } catch (error) {
+            throw new Error(`Error deleting user: ${error.message}`);
         }
     }
 }
