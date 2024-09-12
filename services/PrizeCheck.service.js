@@ -1,6 +1,7 @@
 const Ticket = require('../model/ticket.model');
 const WinningNumbers = require('../model/winningNumbers.model');
 const Prizes = require('../model/Prizes.model');
+const WalletService = require('../services/wallet.services');
 
 exports.checkUserPrizes = async (userId, drawDate) => {
     try {
@@ -128,5 +129,34 @@ exports.checkUserPrizes = async (userId, drawDate) => {
     } catch (error) {
         console.error('Error in checkUserPrizes:', error);
         throw new Error(`เกิดข้อผิดพลาด: ${error.message}`);
+    }
+};
+
+
+exports.PlussPrizes = async (userId, prize) => {
+    try {
+        // Retrieve wallet by userId
+        const wallet = await WalletService.getWalletByUserId(userId);
+        
+        // Check if wallet exists
+        if (!wallet) {
+            throw new Error('Wallet not found');
+        }
+
+        // Ensure the prize amount is valid
+        if (prize <= 0) {
+            throw new Error('Prize amount must be greater than zero');
+        }
+
+        // Calculate new balance
+        const amount =  +prize;
+
+        // Update wallet balance
+        await WalletService.updateWalletBalance(userId, amount);
+
+        return { status: true, message: 'Balance updated successfully' };
+    } catch (error) {
+        console.error("Error in PlussPrizes:", error);
+        return { status: false, message: error.message };
     }
 };
