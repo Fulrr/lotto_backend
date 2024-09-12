@@ -31,7 +31,7 @@ exports.checkUserPrizes = async (userId, drawDate) => {
         console.log('Winning Numbers:', winningNumbers);
 
         if (!winningNumbers) {
-            return { message: 'ไม่พบ Winning numbers สำหรับ DrawDate นี้.' };
+            return { message: 'ไม่พบ Winning numbers สำหรับ DrawDate นี้' };
         }
 
         // เตรียมเก็บผลลัพธ์
@@ -67,8 +67,8 @@ exports.checkUserPrizes = async (userId, drawDate) => {
             let prizeAmount = 0;
             let prizeMessage = '';
 
-            // ตรวจสอบรางวัล
-            if (lottoNumber === String(winningNumbers.FirstPrize)) {
+              // ตรวจสอบรางวัล
+              if (lottoNumber === String(winningNumbers.FirstPrize)) {
                 prizeAmount = 1000000;
                 prizeMessage = 'คุณถูกรางวัลที่ 1';
             } else if (lottoNumber === String(winningNumbers.SecondPrize)) {
@@ -92,7 +92,7 @@ exports.checkUserPrizes = async (userId, drawDate) => {
                     UserID: ticket.UserID,
                     TicketID: ticket._id,
                     PrizeAmount: prizeAmount,
-                    Claimed: false
+                    Claimed: false  // เพิ่มสถานะ Claimed เริ่มต้นเป็น false
                 });
 
                 await prize.save();
@@ -119,7 +119,7 @@ exports.checkUserPrizes = async (userId, drawDate) => {
         }
 
         if (!results.length) {
-            return { message: 'ไม่พบรางวัลสำหรับ Ticket ของผู้ใช้ใน DrawDate นี้' };
+            return { message: 'ไม่พบรางวัลสำหรับ Ticket ของผู้ใช้ใน DrawDate นี้.' };
         }
 
         console.log('Results:', results);
