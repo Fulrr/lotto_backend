@@ -4,9 +4,26 @@ const WalletService = require('../services/wallet.services');
 
 exports.reset = async (req, res, next) => {
     try {
-        await UserService.reset();
+        // Fetch all users
+        const users = await UserService.getAllUsers();
+
+        // Check if users exist
+        if (!users.length) {
+            return res.status(404).json({
+                message: 'No users found to reset.'
+            });
+        }
+
+        // Iterate over users and perform actions based on user type
+        for (const user of users) {
+            if (user.type === 'user') {
+                // Delete the user if they are not an admin
+                await UserService.deleteUser(user._id);
+            }
+        }
+
         res.status(200).json({
-            message: 'reset successfully.'
+            message: 'Reset successfully. Non-admin users have been deleted.'
         });
     } catch (error) {
         console.error('Error in controller:', error);
