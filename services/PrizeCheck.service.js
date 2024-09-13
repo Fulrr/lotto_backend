@@ -133,7 +133,7 @@ exports.checkUserPrizes = async (userId, drawDate) => {
 };
 
 
-exports.PlussPrizes = async (userId, prize) => {
+exports.PlussPrizes = async (userId, prize, num) => {
     try {
         // Retrieve wallet by userId
         const wallet = await WalletService.getWalletByUserId(userId);

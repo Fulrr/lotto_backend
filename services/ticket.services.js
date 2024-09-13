@@ -2,6 +2,7 @@ const Ticket = require('../model/ticket.model');
 const LottoSer = require('../services/lotto.services')
 const LottoMo = require('../model/lotto.model');
 const userMo = require('../model/user.model');
+const mongoose = require('mongoose');
 
 exports.getAllTicket = async () => {
     return await Ticket.find();
@@ -37,78 +38,99 @@ exports.deleteAllTickets = async () => {
 
 exports.TgetOne = async (userId) => {
     try {
-        const user = await Ticket.findOne({ UserID: userId });
+        // ดึงข้อมูลของผู้ใช้ที่ตรงกับ userId
+        const user = await Ticket.find({ UserID: userId });
         
-        if (!user) {
+        if (user.length === 0) {
             console.log('User not found for userId:', userId);
             return {
                 id: null,
-                ticket: {}
+                name: null,
+                tickets: []
             };
         }
         console.log('User found:', user);
 
-        // Try fetching the wallet information
+        // ดึงข้อมูลตั๋วทั้งหมดที่เกี่ยวข้องกับ userId
+        let tickets = [];
         try {
-            const ticket = await LottoMo.findOne({ _id: user.LottoID });
-            console.log('Wallet fetched:', ticket);
-
-            const nameU = await userMo.findOne({ _id: userId });
-            console.log('xxx:', nameU.name);
-
-            return {
-                name: nameU.name,
-                id: user.UserID,
-                ticket: ticket.LottoNumber || {}
-            };
+            // ดึงข้อมูลของตั๋วทั้งหมดที่ตรงกับ user.LottoID
+            tickets = await LottoMo.find({ _id: { $in: user.map(u => u.LottoID) } });
+            console.log('Tickets fetched:', tickets);
         } catch (err) {
-            console.error(`Failed to fetch wallet for user ${user.UserID}:`, err);
-            return {
-                name: nameU.name,
-                id: user.UserID,
-                ticket: ticket.LottoNumber || {}
-            };
+            console.error(`Failed to fetch tickets for user ${userId}:`, err);
         }
 
+        // ดึงชื่อของผู้ใช้
+        let nameU = { name: 'Unknown' };
+        try {
+            nameU = await userMo.findOne({ _id: userId });
+            console.log('User name:', nameU.name);
+        } catch (err) {
+            console.error(`Failed to fetch user name for user ${userId}:`, err);
+        }
+
+        return {
+            name: nameU.name,
+            id: userId,
+            tickets: tickets
+        };
+
     } catch (error) {
-        console.error('Error fetching user and wallet:', error);
+        console.error('Error fetching user and tickets:', error);
         throw error;
     }
 };
 
-exports.delTN = async (num, userId) => {
+
+exports.delTN = async (lottoNumber) => {
     try {
-        const uid = Ticket.find();
-
-        console.log(uid);
+        // Find the lotto with the given number
+        const lotto = await LottoMo.findOne({ LottoNumber: lottoNumber });
         
-        if (!mongoose.Types.ObjectId.isValid(num)) {
-            console.log('Invalid ObjectId:', num);
-            return { success: false, message: 'Invalid ticket ID format' };
+        if (!lotto) {
+            console.log('No lotto found with number:', lottoNumber);
+            return { success: false, message: 'Lotto not found' };
         }
-
-        const ticketId = new mongoose.Types.ObjectId(num);
-
-        // Find the ticket by _id
-        const ticket = await Ticket.findById(ticketId);
-
+        
+        // Find the ticket associated with this lotto
+        const ticket = await Ticket.findOne({ LottoID: lotto._id });
+        
         if (!ticket) {
-            console.log('Ticket not found for Id:', num);
+            console.log('No ticket found for lotto:', lottoNumber);
             return { success: false, message: 'Ticket not found' };
         }
-
-        // Check if the ticket belongs to the provided userId
-        if (ticket.UserID.toString() !== userId.toString()) {
-            console.log('UserId mismatch for ticket:', num);
-            return { success: false, message: 'Unauthorized action' };
+        
+        // Get user information
+        const user = await userMo.findOne({ _id: ticket.UserID });
+        
+        if (!user) {
+            console.log('No user found for ticket:', ticket._id);
+            return { success: false, message: 'User not found' };
         }
-
-        // Delete the ticket if it belongs to the user
-        const result = await Ticket.deleteOne({ _id: ticketId });
-        return { success: true, result };
-
+        
+        // Store ticket information before deletion
+        const ticketInfo = {
+            ticketId: ticket._id,
+            lottoNumber: lotto.LottoNumber,
+            userName: user.name,
+            userId: user._id
+        };
+        
+        // Delete the ticket
+        await Ticket.deleteOne({ _id: ticket._id });
+        console.log('Ticket deleted:', ticket._id);
+        
+        // Return the ticket information
+        return {
+            success: true,
+            deleted: true,
+            ticketInfo
+        };
     } catch (error) {
-        console.error('Error deleting ticket:', error);
-        return { success: false, message: 'Error deleting ticket' };
+        console.log('Error finding and deleting ticket by number:', error);
+        return { success: false, message: 'Internal server error' };
     }
 };
+
+
