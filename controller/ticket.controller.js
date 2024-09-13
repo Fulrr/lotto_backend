@@ -22,6 +22,19 @@ exports.delT = async (req, res, next) => {
     }
 };
 
+exports.delAllT = async (req, res, next) => {
+    try {
+        // Call deleteAllTickets instead of delT
+        const delT = await TicketService.deleteAllTickets();
+        if (!delT.deletedCount) { // Check if any tickets were deleted
+            return res.status(404).json({ status: false, message: 'No tickets found to delete' });
+        }
+        res.json({ status: true, data: delT });
+    } catch (error) {
+        next(error);
+    }
+};
+
 
 exports.TgetOne = async (req, res, next) => {
     try {

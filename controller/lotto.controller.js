@@ -11,6 +11,17 @@ exports.getAllLottos = async (req, res, next) => {
     }
 };
 
+//lotto ที่ขายแล้ว
+exports.getAllLottosWithZeroAmount = async (req, res, next) => {
+    try {
+        const lottos = await LottoService.getAllLottosWithZeroAmount(); // เรียก service ที่สร้างขึ้น
+        res.json({ status: true, data: lottos });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 exports.getLottoByNumber = async (req, res, next) => {
     try {
         const { lottoNumber } = req.params;

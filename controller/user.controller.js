@@ -100,7 +100,7 @@ exports.login = async (req, res, next) => {
          // ดึงข้อมูลกระเป๋าเงินของผู้ใช้
          const wallet = await WalletService.getWalletByUserId(user._id);
         
-        res.status(200).json({ status: true, token: token, wallet: wallet });
+        res.status(200).json({ status: true, token: token, wallet: wallet, userType: userType });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ status: false, message: 'An error occurred during login' });

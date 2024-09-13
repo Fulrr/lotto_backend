@@ -25,6 +25,16 @@ exports.delT = async (userId) => {
     }
 };
 
+exports.deleteAllTickets = async () => {
+    try {
+        const result = await Ticket.deleteMany({});
+        return result;
+    } catch (error) {
+        console.error('Error deleting all tickets:', error);
+        throw new Error('Failed to delete all tickets');
+    }
+};
+
 exports.TgetOne = async (userId) => {
     try {
         const user = await Ticket.findOne({ UserID: userId });

@@ -6,6 +6,16 @@ exports.getAllLottos = async () => {
     return await Lotto.find();
 };
 
+// ฟังก์ชันที่ดึงลอตโต้ทั้งหมดที่มี Amount = 0 /lotto ที่ขายแล้ว
+exports.getAllLottosWithZeroAmount = async () => {
+    try {
+        const lottos = await Lotto.find({ Amount: 0 }); // ค้นหาลอตโต้ที่ Amount เท่ากับ 0
+        return lottos;
+    } catch (error) {
+        throw new Error('Failed to fetch lottos with zero amount: ' + error.message);
+    }
+};
+
 exports.getLottoByNumber = async (lottoNumber) => {
     // const regex = new RegExp(lottoNumber);
   
