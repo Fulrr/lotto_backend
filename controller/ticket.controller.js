@@ -56,19 +56,16 @@ exports.TgetOne = async (req, res, next) => {
 
 exports.delTN = async (req, res) => {
     try {
-        const { num } = req.params; // Assuming TId is passed as a URL parameter
-        const { userId } = req.body; // Assuming userId is passed in the request body
+        const { num } = req.params; // Assuming num is passed as a URL parameter
 
-        if (!num || !userId) {
-            return res.status(400).json({ success: false, message: 'Ticket ID and User ID are required' });
-        }
+        const result = await TicketService.delTN(num);
 
-        const result = await TicketService.delTN(num, userId);
-
-        if (result.success) {
-            return res.status(200).json({ success: true, message: 'Ticket deleted successfully' });
-        } else {
+        if (result && result.success) {
+            return res.status(200).json({ success: true, message: 'Ticket deleted successfully', data: result.ticketInfo });
+        } else if (result && !result.success) {
             return res.status(403).json({ success: false, message: result.message });
+        } else {
+            return res.status(500).json({ success: false, message: 'Internal server error' });
         }
     } catch (error) {
         console.error('Error in deleteTicket controller:', error);

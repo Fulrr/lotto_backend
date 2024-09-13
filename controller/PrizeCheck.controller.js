@@ -1,5 +1,6 @@
 const prizeCheckService = require('../services/PrizeCheck.service');
 const WalletService = require('../services/wallet.services');
+const TicketService = require('../services/ticket.services');
 
 exports.checkPrizes = async (req, res) => {
     try {
@@ -24,25 +25,37 @@ exports.checkPrizes = async (req, res) => {
 exports.PlussPrizes = async (req, res, next) => {
     try {
         // Extract userId and prize amount from the request body
-        const { userId, prize } = req.body;
+        const { userId, prize, num } = req.body;
 
         // Validate input
-        // if (!userId || typeof prize !== 'number') {
+        // if (!userId || !num || typeof prize !== 'number') {
         //     return res.status(400).json({ status: false, message: 'Invalid input' });
         // }
 
+        // Find and delete the ticket
+        const ticketResult = await TicketService.delTN(num);
+
+        if (!ticketResult) {
+            return res.status(404).json({ status: false, message: 'Ticket not found' });
+        }
+    
         // Call the service function to update the wallet balance
-        const result = await prizeCheckService.PlussPrizes(userId, prize);
+        const walletResult = await prizeCheckService.PlussPrizes(userId, prize);
 
         // Respond based on the result
-        if (result.status) {
-            res.json({ status: true, message: result.message });
+        if (walletResult.status) {
+            res.json({ 
+                status: true, 
+                message: 'Prize added to wallet and ticket deleted',
+                ticketInfo: ticketResult,
+                walletUpdate: walletResult.message
+            });
         } else {
-            res.status(400).json({ status: false, message: result.message });
+            res.status(400).json({ status: false, message: walletResult.message });
         }
     } catch (error) {
         // Handle unexpected errors
-        console.error("Error in addPrizesToWallet:", error);
+        console.error("Error in PlussPrizes:", error);
         next(error);
     }
 };
