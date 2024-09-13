@@ -11,31 +11,16 @@ exports.getAllLottos = async (req, res, next) => {
     }
 };
 
-<<<<<<< HEAD
 //lotto ที่ขายแล้ว
 exports.getAllLottosWithZeroAmount = async (req, res, next) => {
     try {
         const lottos = await LottoService.getAllLottosWithZeroAmount(); // เรียก service ที่สร้างขึ้น
         res.json({ status: true, data: lottos });
-=======
-exports.getAllNum = async (req, res, next) => {
-    try {
-        const { lottoNumber } = req.params;
-        const lotto = await LottoService.getByNumber(lottoNumber);
-        if (!lotto) {
-            return res.status(404).json({ status: false, message: 'Lotto not found' });
-        }
-        res.json({ status: true, data: lotto });
->>>>>>> be761d4a61171504743f9973753756c1acd8550d
     } catch (error) {
         next(error);
     }
 };
 
-<<<<<<< HEAD
-
-=======
->>>>>>> be761d4a61171504743f9973753756c1acd8550d
 exports.getLottoByNumber = async (req, res, next) => {
     try {
         const { lottoNumber } = req.params;

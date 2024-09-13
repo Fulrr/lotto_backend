@@ -76,3 +76,39 @@ exports.TgetOne = async (userId) => {
     }
 };
 
+exports.delTN = async (num, userId) => {
+    try {
+        const uid = Ticket.find();
+
+        console.log(uid);
+        
+        if (!mongoose.Types.ObjectId.isValid(num)) {
+            console.log('Invalid ObjectId:', num);
+            return { success: false, message: 'Invalid ticket ID format' };
+        }
+
+        const ticketId = new mongoose.Types.ObjectId(num);
+
+        // Find the ticket by _id
+        const ticket = await Ticket.findById(ticketId);
+
+        if (!ticket) {
+            console.log('Ticket not found for Id:', num);
+            return { success: false, message: 'Ticket not found' };
+        }
+
+        // Check if the ticket belongs to the provided userId
+        if (ticket.UserID.toString() !== userId.toString()) {
+            console.log('UserId mismatch for ticket:', num);
+            return { success: false, message: 'Unauthorized action' };
+        }
+
+        // Delete the ticket if it belongs to the user
+        const result = await Ticket.deleteOne({ _id: ticketId });
+        return { success: true, result };
+
+    } catch (error) {
+        console.error('Error deleting ticket:', error);
+        return { success: false, message: 'Error deleting ticket' };
+    }
+};
