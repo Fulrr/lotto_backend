@@ -70,19 +70,19 @@ exports.checkUserPrizes = async (userId, drawDate) => {
 
               // ตรวจสอบรางวัล
               if (lottoNumber === String(winningNumbers.FirstPrize)) {
-                prizeAmount = 1000000;
+                prizeAmount = 10000;
                 prizeMessage = 'คุณถูกรางวัลที่ 1';
             } else if (lottoNumber === String(winningNumbers.SecondPrize)) {
-                prizeAmount = 200000; // สมมติว่ารางวัลที่ 2 มีมูลค่า 200,000 บาท
+                prizeAmount = 8000; // สมมติว่ารางวัลที่ 2 มีมูลค่า 200,000 บาท
                 prizeMessage = 'คุณถูกรางวัลที่ 2';
             } else if (lottoNumber === String(winningNumbers.ThirdPrize)) {
-                prizeAmount = 80000; // สมมติว่ารางวัลที่ 3 มีมูลค่า 80,000 บาท
+                prizeAmount = 6000; // สมมติว่ารางวัลที่ 3 มีมูลค่า 80,000 บาท
                 prizeMessage = 'คุณถูกรางวัลที่ 3';
             } else if (lottoNumber === String(winningNumbers.FourthPrize)) {
-                prizeAmount = 40000; // สมมติว่ารางวัลที่ 4 มีมูลค่า 40,000 บาท
+                prizeAmount = 4000; // สมมติว่ารางวัลที่ 4 มีมูลค่า 40,000 บาท
                 prizeMessage = 'คุณถูกรางวัลที่ 4';
             } else if (lottoNumber === String(winningNumbers.FifthPrize)) {
-                prizeAmount = 20000; // สมมติว่ารางวัลที่ 5 มีมูลค่า 20,000 บาท
+                prizeAmount = 2000; // สมมติว่ารางวัลที่ 5 มีมูลค่า 20,000 บาท
                 prizeMessage = 'คุณถูกรางวัลที่ 5';
             }
 
